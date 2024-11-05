@@ -12,6 +12,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class PracticalTest01MainActivity extends AppCompatActivity {
     private static final int THRESHOLD = 24; // D.1.b: Pragul de declanșare a serviciului dacă count1 + count2 > THRESHOLD
@@ -69,6 +72,13 @@ public class PracticalTest01MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        // Apply system window insets for better layout adjustment
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.practicaltest01), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
     }
 
     // Salvăm datele (count1 și count2) în bundle pentru a le restaura ulterior
