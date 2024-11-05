@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permisiune necesară pentru receiver-ul de broadcast -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,15 +15,70 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PracticalTest01"
         tools:targetApi="31">
+
+        <!--  DACA VAD SERVICIU - service
+        , ACTIVITATE SECUNDARA - activity
+        , DIFUZARE(BROADCAST) - receiver
+        MEREU TERBUIE SA ADD IN MANIFSET  -->
+
+        <!-- TOATE DINTRE ELE POT AVEA ACTIUNI DE FACUT, TOATE AU CATEGORY, EXCEPTIE
+             BROADCAST, LUCREAZA IN  BACKGROUND, RESTUL TREBUIE LANSATE FOREGROUND
+             DACA SE INTAMPLA CEVA LA NIVEL DE APP -->
+
+        <!-- TOATE POT FI EXPORTATE, ACCESATE DE ALTE APP-URI SAU VAZUTE INAFARA APP DE LOGGER -->
+
+        <!-- INTENT-URILE AU FORMA: android.intent.action.<NUME_INTENT> -->
+        <!-- INTENT-URILE AU FORMA: android.intent.action.<NUME_INTENT> -->
+
+        <!-- Declarația serviciului -->
+        <!-- PracticalTest01Service este un serviciu de tip started care transmite periodic mesaje broadcast -->
+        <!-- Serviciul nu este exportat deoarece este destinat doar pentru uzul aplicației curente -->
+        <service
+            android:name=".PracticalTest01Service"
+            android:exported="false" />
+
+        <!-- Declarația Activității Principale -->
+        <!-- PracticalTest01MainActivity este punctul de intrare principal al aplicației -->
         <activity
-            android:name=".MainActivity"
+            android:name=".PracticalTest01MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!-- Declarația Activității Secundare -->
+        <!-- PracticalTest01SecondaryActivity este utilizată pentru a afișa un cont total -->
+        <!-- Exportat pentru a permite lansarea acestei activități cu anumite acțiuni din alte părți ale aplicației -->
+        <activity
+            android:name=".PracticalTest01SecondaryActivity"
+            android:exported="true">
+            <intent-filter>
+                <!-- Această activitate este asociată cu acțiunea "ANSWER" (DEFINITA DE NOI) ca exemplu -->
+                <!-- ACEASTA NOUA ACTIVITATE MEREU ARE CATEGORIA LAUNCHER  -->
+                <action android:name="android.intent.action.ANSWER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Declarația Broadcast Receiver-ului -->
+        <!-- PracticalTest01BroadcastReceiver ascultă intențiile de tip broadcast trimise de PracticalTest01Service -->
+        <!-- Receiver-ul ascultă pentru trei acțiuni definite: ARITHMETIC_MEAN, GEOMETRIC_MEAN și RANDOM -->
+        <!-- "android:exported" este setat la true pentru a permite primirea de broadcast-uri din afara aplicației -->
+        <receiver
+            android:name=".PracticalTest01BroadcastReceiver"
+            android:exported="true"
+            android:permission="normal">
+            <intent-filter>
+                <!-- Fiecare acțiune pe care receiver-ul trebuie să o asculte este declarată aici -->
+                <!-- ACTIUNILE DEFINTE DE NOI, BROADCASTER-UL VA TRANSMITE ACESTE VALORI SI INAFARA APP -->
+                <!-- ACESTE ACTIUNI SE POT VEDEA CEL MAI BINE IN TOASTER LOG (LOGCAT) -->
+                <action android:name="ro.pub.cs.systems.eim.practicaltest01.ARITHMETIC_MEAN" />
+                <action android:name="ro.pub.cs.systems.eim.practicaltest01.GEOMETRIC_MEAN" />
+                <action android:name="ro.pub.cs.systems.eim.practicaltest01.RANDOM" />
+            </intent-filter>
+        </receiver>
+
+    </application>
 </manifest>
